@@ -1,0 +1,158 @@
+{
+  "api" : {
+    "definitionVersion" : "V4",
+    "type" : "PROXY",
+    "listeners" : [ {
+      "type" : "HTTP",
+      "paths" : [ {
+        "host" : "grpc.gravitee.io",
+        "path" : "/",
+        "overrideAccess" : false
+      } ],
+      "entrypoints" : [ {
+        "type" : "http-proxy",
+        "qos" : "AUTO",
+        "configuration" : { }
+      } ]
+    } ],
+    "endpointGroups" : [ {
+      "name" : "Default HTTP proxy group",
+      "type" : "http-proxy",
+      "loadBalancer" : {
+        "type" : "ROUND_ROBIN"
+      },
+      "sharedConfiguration" : {
+        "proxy" : {
+          "enabled" : false
+        },
+        "http" : {
+          "keepAlive" : true,
+          "followRedirects" : false,
+          "readTimeout" : 10000,
+          "idleTimeout" : 60000,
+          "connectTimeout" : 3000,
+          "useCompression" : true,
+          "maxConcurrentConnections" : 20,
+          "version" : "HTTP_2",
+          "pipelining" : false,
+          "clearTextUpgrade" : true
+        }
+      },
+      "endpoints" : [ {
+        "name" : "Default HTTP proxy",
+        "type" : "http-proxy",
+        "weight" : 1,
+        "inheritConfiguration" : true,
+        "configuration" : {
+          "target" : "grpc://grpc-backend1:8888"
+        },
+        "services" : { },
+        "secondary" : false
+      } ],
+      "services" : { }
+    } ],
+    "analytics" : {
+      "enabled" : true,
+      "logging" : {
+        "content" : {
+          "headers" : true,
+          "messageHeaders" : false,
+          "payload" : true,
+          "messagePayload" : false,
+          "messageMetadata" : false
+        },
+        "phase" : {
+          "request" : true,
+          "response" : true
+        },
+        "mode" : {
+          "endpoint" : true,
+          "entrypoint" : true
+        }
+      }
+    },
+    "flowExecution" : {
+      "mode" : "DEFAULT",
+      "matchRequired" : false
+    },
+    "flows" : [ ],
+    "id" : "ba907f61-0ac9-453d-907f-610ac9053de7",
+    "name" : "gRPC Proxy",
+    "description" : "",
+    "apiVersion" : "1.0.0",
+    "deployedAt" : "2024-04-02T13:46:01.435Z",
+    "createdAt" : "2024-03-21T08:55:30.02Z",
+    "updatedAt" : "2024-04-02T14:09:47.647Z",
+    "disableMembershipNotifications" : false,
+    "groups" : [ ],
+    "state" : "STARTED",
+    "visibility" : "PRIVATE",
+    "lifecycleState" : "CREATED",
+    "tags" : [ ],
+    "primaryOwner" : {
+      "id" : "84017f9e-145b-4c42-817f-9e145b0c4221",
+      "displayName" : "admin",
+      "type" : "USER"
+    },
+    "definitionContext" : {
+      "origin" : "MANAGEMENT",
+      "mode" : "FULLY_MANAGED",
+      "syncFrom" : "MANAGEMENT"
+    },
+    "responseTemplates" : { },
+    "properties" : [ ]
+  },
+  "members" : [ {
+    "id" : "84017f9e-145b-4c42-817f-9e145b0c4221",
+    "displayName" : "admin",
+    "roles" : [ {
+      "name" : "PRIMARY_OWNER",
+      "scope" : "API"
+    } ]
+  } ],
+  "metadata" : [ {
+    "key" : "email-support",
+    "name" : "email-support",
+    "format" : "MAIL",
+    "value" : "${(api.primaryOwner.email)!''}",
+    "defaultValue" : "support@change.me"
+  } ],
+  "pages" : [ {
+    "id" : "671f6a02-dbbc-44ee-9f6a-02dbbc64ee7f",
+    "name" : "Aside",
+    "type" : "SYSTEM_FOLDER",
+    "order" : 0,
+    "published" : true,
+    "visibility" : "PUBLIC",
+    "updatedAt" : "2024-03-21T08:55:30.107Z",
+    "contentType" : "application/json",
+    "homepage" : false,
+    "parentPath" : "",
+    "excludedAccessControls" : false,
+    "accessControls" : [ ],
+    "attachedMedia" : [ ]
+  } ],
+  "plans" : [ {
+    "definitionVersion" : "V4",
+    "flows" : [ ],
+    "mode" : "STANDARD",
+    "id" : "fca6b3b7-33b9-3178-8e0c-cfa0a8a4fd60",
+    "name" : "Default Keyless (UNSECURED)",
+    "description" : "Default unsecured plan",
+    "apiId" : "ba907f61-0ac9-453d-907f-610ac9053de7",
+    "security" : {
+      "type" : "KEY_LESS",
+      "configuration" : { }
+    },
+    "commentRequired" : false,
+    "createdAt" : "2024-03-21T08:55:30.099Z",
+    "order" : 1,
+    "publishedAt" : "2024-03-21T08:55:30.099Z",
+    "status" : "PUBLISHED",
+    "tags" : [ ],
+    "type" : "API",
+    "updatedAt" : "2024-03-21T08:55:30.099Z",
+    "validation" : "AUTO"
+  } ],
+  "apiMedia" : [ ]
+}

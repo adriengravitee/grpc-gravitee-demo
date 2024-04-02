@@ -1,0 +1,228 @@
+{
+  "api" : {
+    "definitionVersion" : "V4",
+    "type" : "PROXY",
+    "listeners" : [ {
+      "type" : "HTTP",
+      "paths" : [ {
+        "host" : "apim-samples.gravitee.io",
+        "path" : "/",
+        "overrideAccess" : false
+      }, {
+        "host" : "grpc-example.gravitee.io",
+        "path" : "/",
+        "overrideAccess" : false
+      } ],
+      "entrypoints" : [ {
+        "type" : "http-proxy",
+        "qos" : "AUTO",
+        "configuration" : { }
+      } ]
+    } ],
+    "endpointGroups" : [ {
+      "name" : "Default HTTP proxy group",
+      "type" : "http-proxy",
+      "loadBalancer" : {
+        "type" : "ROUND_ROBIN"
+      },
+      "sharedConfiguration" : {
+        "proxy" : {
+          "enabled" : false
+        },
+        "http" : {
+          "keepAlive" : true,
+          "followRedirects" : false,
+          "readTimeout" : 10000,
+          "idleTimeout" : 60000,
+          "connectTimeout" : 3000,
+          "useCompression" : true,
+          "maxConcurrentConnections" : 20,
+          "version" : "HTTP_2",
+          "pipelining" : false,
+          "clearTextUpgrade" : true
+        }
+      },
+      "endpoints" : [ {
+        "name" : "apim-samples",
+        "type" : "http-proxy",
+        "weight" : 1,
+        "inheritConfiguration" : true,
+        "configuration" : {
+          "target" : "grpc://grpc-backend1:8888"
+        },
+        "sharedConfigurationOverride" : { },
+        "services" : { },
+        "secondary" : false
+      }, {
+        "name" : "grpc-example",
+        "type" : "http-proxy",
+        "weight" : 1,
+        "inheritConfiguration" : true,
+        "configuration" : {
+          "target" : "grpc://grpc-backend2:8888"
+        },
+        "sharedConfigurationOverride" : { },
+        "services" : { },
+        "secondary" : false
+      } ],
+      "services" : { }
+    } ],
+    "analytics" : {
+      "enabled" : true,
+      "logging" : {
+        "content" : {
+          "headers" : true,
+          "messageHeaders" : false,
+          "payload" : true,
+          "messagePayload" : false,
+          "messageMetadata" : false
+        },
+        "phase" : {
+          "request" : true,
+          "response" : true
+        },
+        "mode" : {
+          "endpoint" : true,
+          "entrypoint" : true
+        }
+      }
+    },
+    "flowExecution" : {
+      "mode" : "DEFAULT",
+      "matchRequired" : false
+    },
+    "flows" : [ {
+      "name" : "apim-samples",
+      "enabled" : true,
+      "selectors" : [ {
+        "type" : "HTTP",
+        "path" : "/",
+        "pathOperator" : "STARTS_WITH",
+        "methods" : [ ]
+      }, {
+        "type" : "CONDITION",
+        "condition" : "{#request.host == \"apim-samples.gravitee.io\"}"
+      } ],
+      "request" : [ {
+        "name" : "Dynamic Routing",
+        "enabled" : true,
+        "policy" : "dynamic-routing",
+        "configuration" : {
+          "rules" : [ {
+            "pattern" : "/(.*)",
+            "url" : "{#endpoints['apim-samples']}/{#group[0]}"
+          } ]
+        }
+      } ],
+      "response" : [ ],
+      "subscribe" : [ ],
+      "publish" : [ ],
+      "tags" : [ ]
+    }, {
+      "name" : "grpc-example",
+      "enabled" : true,
+      "selectors" : [ {
+        "type" : "HTTP",
+        "path" : "/",
+        "pathOperator" : "STARTS_WITH",
+        "methods" : [ ]
+      }, {
+        "type" : "CONDITION",
+        "condition" : "{#request.host == \"grpc-example.gravitee.io\"}"
+      } ],
+      "request" : [ {
+        "name" : "Dynamic Routing",
+        "enabled" : true,
+        "policy" : "dynamic-routing",
+        "configuration" : {
+          "rules" : [ {
+            "pattern" : "/(.*)",
+            "url" : "{#endpoints['grpc-example']}/{#group[0]}"
+          } ]
+        }
+      } ],
+      "response" : [ ],
+      "subscribe" : [ ],
+      "publish" : [ ],
+      "tags" : [ ]
+    } ],
+    "id" : "e871d91e-5d84-4fed-b1d9-1e5d849fed90",
+    "name" : "gRPC dynamic",
+    "description" : "",
+    "apiVersion" : "1.0.0",
+    "deployedAt" : "2024-03-21T10:07:21.171Z",
+    "createdAt" : "2024-03-21T09:01:24.309Z",
+    "updatedAt" : "2024-03-21T10:07:21.171Z",
+    "disableMembershipNotifications" : false,
+    "groups" : [ ],
+    "state" : "STARTED",
+    "visibility" : "PRIVATE",
+    "lifecycleState" : "CREATED",
+    "tags" : [ ],
+    "primaryOwner" : {
+      "id" : "84017f9e-145b-4c42-817f-9e145b0c4221",
+      "displayName" : "admin",
+      "type" : "USER"
+    },
+    "definitionContext" : {
+      "origin" : "MANAGEMENT",
+      "mode" : "FULLY_MANAGED",
+      "syncFrom" : "MANAGEMENT"
+    },
+    "responseTemplates" : { },
+    "properties" : [ ]
+  },
+  "members" : [ {
+    "id" : "84017f9e-145b-4c42-817f-9e145b0c4221",
+    "displayName" : "admin",
+    "roles" : [ {
+      "name" : "PRIMARY_OWNER",
+      "scope" : "API"
+    } ]
+  } ],
+  "metadata" : [ {
+    "key" : "email-support",
+    "name" : "email-support",
+    "format" : "MAIL",
+    "value" : "${(api.primaryOwner.email)!''}",
+    "defaultValue" : "support@change.me"
+  } ],
+  "pages" : [ {
+    "id" : "b899b036-74d0-4056-99b0-3674d09056af",
+    "name" : "Aside",
+    "type" : "SYSTEM_FOLDER",
+    "order" : 0,
+    "published" : true,
+    "visibility" : "PUBLIC",
+    "updatedAt" : "2024-03-21T09:01:24.344Z",
+    "contentType" : "application/json",
+    "homepage" : false,
+    "parentPath" : "",
+    "excludedAccessControls" : false,
+    "accessControls" : [ ],
+    "attachedMedia" : [ ]
+  } ],
+  "plans" : [ {
+    "definitionVersion" : "V4",
+    "flows" : [ ],
+    "mode" : "STANDARD",
+    "id" : "18f81f9f-b4b4-3898-85c4-a8e6ecf69a75",
+    "name" : "Default Keyless (UNSECURED)",
+    "description" : "Default unsecured plan",
+    "apiId" : "e871d91e-5d84-4fed-b1d9-1e5d849fed90",
+    "security" : {
+      "type" : "KEY_LESS",
+      "configuration" : { }
+    },
+    "commentRequired" : false,
+    "createdAt" : "2024-03-21T09:01:24.342Z",
+    "order" : 1,
+    "publishedAt" : "2024-03-21T09:01:24.342Z",
+    "status" : "PUBLISHED",
+    "tags" : [ ],
+    "type" : "API",
+    "updatedAt" : "2024-03-21T09:01:24.342Z",
+    "validation" : "AUTO"
+  } ],
+  "apiMedia" : [ ]
+}
